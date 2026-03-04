@@ -1,4 +1,3 @@
-import { ModeToggle } from "../mode-toggle";
 import { ProductsTable } from "../products/table/product-table";
 import { CreateProduct } from "../products/create-product";
 import { SearchIcon } from "lucide-react";
@@ -22,7 +21,6 @@ export function ProductPage() {
         <CreateProduct onAddProduct={handleAddProduct} />
       </div>
       <ProductsTable products={products} />
-      <ModeToggle />
     </div>
   );
 }
