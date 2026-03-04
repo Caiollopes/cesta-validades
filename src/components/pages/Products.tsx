@@ -5,7 +5,7 @@ import { BaseInput } from "../base-input";
 import { useState } from "react";
 import type { Product } from "../products/table/product-data";
 
-export function ProductPage() {
+export function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   const handleAddProduct = (product: Product) => {

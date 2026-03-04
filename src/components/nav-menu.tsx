@@ -21,18 +21,37 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function NavMenu() {
   const { setTheme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  function isActive(path: string) {
+    return location.pathname === path;
+  }
 
   return (
     <div className="flex items-center justify-center">
       <Menubar className="w-fit">
         <MenubarMenu>
-          <MenubarTrigger>Produtos</MenubarTrigger>
+          <MenubarTrigger
+            onClick={() => navigate("/produtos")}
+            className={isActive("/produtos") ? "bg-muted" : "hover:bg-muted/30"}
+          >
+            Produtos
+          </MenubarTrigger>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger>Validades</MenubarTrigger>
+          <MenubarTrigger
+            onClick={() => navigate("/validades")}
+            className={
+              isActive("/validades") ? "bg-muted" : "hover:bg-muted/30"
+            }
+          >
+            Validades
+          </MenubarTrigger>
         </MenubarMenu>
         <MenubarMenu>
           <DropdownMenu>

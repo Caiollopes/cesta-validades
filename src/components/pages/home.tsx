@@ -1,11 +1,8 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NavMenu } from "../nav-menu";
-import { ProductPage } from "./product-page";
+import { ExpirationsPage } from "./Expirations";
+import { ProductsPage } from "./Products";
 
 export function Home() {
-  return (
-    <div className="flex flex-col px-20 py-5 justify-center  w-full gap-20">
-      <NavMenu />
-      <ProductPage />
-    </div>
-  );
+  return <h1>teste</h1>;
 }
