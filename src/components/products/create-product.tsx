@@ -40,13 +40,16 @@ export function CreateProduct({ onAddProduct }: CreateProductProps) {
     e.preventDefault();
 
     if (onAddProduct) {
+      // Remove todos os ponto e depois substitui a , por .
+      const formatValue = costValue.replace(/\./g, "").replace(",", ".");
+
       onAddProduct({
         id: String(Date.now()),
         name: productName,
         brand: brand || "-",
         codBar: Number(codBar) || 0,
         ncm: Number(ncm) || 0,
-        costValue: Number(costValue) || 0,
+        costValue: parseFloat(formatValue) || 0,
         dateExp: dateExp ? dateExp.getTime() : 0,
         productQuant: Number(productQuant) || 0,
       });
