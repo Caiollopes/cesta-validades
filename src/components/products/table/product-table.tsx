@@ -42,7 +42,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
   });
 
   //Ceil - retorna o numero inteiro menor 1.5 = retorna 1.0
-  const totalPages = Math.ceil(sortedProducts.length / 5);
+  const totalPages = Math.max(1, Math.ceil(sortedProducts.length / 5));
 
   function handleSortToggle() {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
