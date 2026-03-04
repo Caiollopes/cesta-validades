@@ -14,6 +14,8 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -25,9 +27,27 @@ interface ProductsTableProps {
 
 export function ProductsTable({ products }: ProductsTableProps) {
   const [page, setPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  // Ordena os produtos por nome
+  const sortedProducts = [...products].sort((a, b) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
+
+    if (sortOrder === "asc") {
+      return nameA.localeCompare(nameB);
+    } else {
+      return nameB.localeCompare(nameA);
+    }
+  });
 
   //Ceil - retorna o numero inteiro menor 1.5 = retorna 1.0
-  const totalPages = Math.ceil(products.length / 5);
+  const totalPages = Math.ceil(sortedProducts.length / 5);
+
+  function handleSortToggle() {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setPage(1);
+  }
 
   function goToFirstPage() {
     setPage(1);
@@ -55,25 +75,49 @@ export function ProductsTable({ products }: ProductsTableProps) {
             {nameProducts.map((col) => (
               <TableHead
                 key={col.label}
-                className="border-l text-center"
+                className=" text-center"
                 style={{ width: col.width }}
               >
-                {col.label}
+                {/* Se col.label for igua a "Nome do produto
+                irá retornar o botão de ordernar ao lado dele, e
+                se caso não for, ira retorna apenas o nome da coluna, normalmente" */}
+                {col.label === "Nome do produto" ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      onClick={handleSortToggle}
+                      className="cursor-pointer hover:opacity-70 flex items-center justify-center gap-1"
+                    >
+                      {col.label}
+                      {sortOrder === "asc" ? (
+                        <ArrowUp size={16} />
+                      ) : (
+                        <ArrowDown size={16} />
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  col.label
+                )}
               </TableHead>
             ))}
           </TableRow>
         </TableHeader>
 
         {/* Linha das colunas */}
-        {products.length > 0 ? (
+        {sortedProducts.length > 0 ? (
           <TableBody>
-            {products.slice((page - 1) * 5, page * 5).map((product) => (
+            {sortedProducts.slice((page - 1) * 5, page * 5).map((product) => (
               <TableRow key={product.id} className="text-center">
                 <TableCell>{product.codBar}</TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.brand}</TableCell>
                 <TableCell>{product.ncm}</TableCell>
-                <TableCell>{product.costValue}</TableCell>
+                <TableCell>
+                  {product.costValue?.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </TableCell>
                 {/* <TableCell>
                   {product.dateExp
                     ? format(new Date(product.dateExp), "dd/MM/yyyy", {
