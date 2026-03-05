@@ -15,9 +15,6 @@ export function ProductsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center justify-between">
-        <BaseInput className="w-80" placeholder="Buscar produto">
-          <SearchIcon />
-        </BaseInput>
         <CreateProduct onAddProduct={handleAddProduct} />
       </div>
       <ProductsTable products={products} />
