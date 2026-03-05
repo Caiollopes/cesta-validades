@@ -20,12 +20,14 @@ import {
 } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
+import { CreateProduct } from "../create-product";
 
 interface ProductsTableProps {
   products: Product[];
+  onAddProduct: (product: Product) => void;
 }
 
-export function ProductsTable({ products }: ProductsTableProps) {
+export function ProductsTable({ products, onAddProduct }: ProductsTableProps) {
   const [page, setPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [search, setSearch] = useState("");
@@ -86,14 +88,17 @@ export function ProductsTable({ products }: ProductsTableProps) {
 
   return (
     <>
-      <BaseInput
-        className="w-80"
-        placeholder="Buscar produto"
-        value={search}
-        onChange={handleSearch}
-      >
-        <SearchIcon />
-      </BaseInput>
+      <div className="flex flex-row items-center justify-between">
+        <BaseInput
+          className="w-80"
+          placeholder="Buscar produto"
+          value={search}
+          onChange={handleSearch}
+        >
+          <SearchIcon />
+        </BaseInput>
+        <CreateProduct onAddProduct={onAddProduct} />
+      </div>
       <div className="rounded-md border">
         <Table>
           {/* Nome das colunas */}

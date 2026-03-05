@@ -1,7 +1,4 @@
 import { ProductsTable } from "../products/table/product-table";
-import { CreateProduct } from "../products/create-product";
-import { SearchIcon } from "lucide-react";
-import { BaseInput } from "../base-input";
 import { useState } from "react";
 import type { Product } from "../products/table/product-data";
 
@@ -14,10 +11,7 @@ export function ProductsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-row items-center justify-between">
-        <CreateProduct onAddProduct={handleAddProduct} />
-      </div>
-      <ProductsTable products={products} />
+      <ProductsTable products={products} onAddProduct={handleAddProduct} />
     </div>
   );
 }
