@@ -21,6 +21,7 @@ import { BaseInput } from "../base-input";
 import { DateCalendar } from "../date-calendar";
 import { useState } from "react";
 import type { Product } from "./table/product-data";
+import { toast } from "sonner";
 
 interface CreateProductProps {
   onAddProduct: (product: Product) => void;
@@ -54,7 +55,6 @@ export function CreateProduct({ onAddProduct }: CreateProductProps) {
         productQuant: Number(productQuant) || 0,
       });
     }
-
     // Limpar formulário
     setProductName("");
     setBrand("");
@@ -64,6 +64,8 @@ export function CreateProduct({ onAddProduct }: CreateProductProps) {
     setDateExp(undefined);
     setProductQuant("");
     setIsOpen(false);
+
+    toast.success("Produto criado com sucesso!");
   };
 
   return (
