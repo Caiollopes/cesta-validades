@@ -84,7 +84,7 @@ export function ProductsTable({ products, onAddProduct }: ProductsTableProps) {
   // Math.max, garante que não fique com 0 paginas, terá sempre 1.
   // Math.ceil, divide o total de produtos por 5, para deixar apenas 5 produtos por pagina
   // e não deixa a pagina quebra, se eu tenho 12 produtos, serão 3 paginas
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / 5));
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / 6));
 
   return (
     <>
@@ -139,7 +139,7 @@ export function ProductsTable({ products, onAddProduct }: ProductsTableProps) {
           {filteredProducts.length > 0 ? (
             <TableBody>
               {filteredProducts
-                .slice((page - 1) * 5, page * 5)
+                .slice((page - 1) * 6, page * 6)
                 .map((product) => (
                   <TableRow key={product.id} className="text-center">
                     <TableCell>{product.codBar}</TableCell>
