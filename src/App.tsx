@@ -1,8 +1,9 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider";
 import { ProductsPage } from "./components/pages/Products";
 import { ExpirationsPage } from "./components/pages/Expirations";
 import { NavMenu } from "./components/nav-menu";
+import { Toaster } from "./components/ui/sonner";
 
 export function App() {
   return (
@@ -15,6 +16,7 @@ export function App() {
           <Route path="/validades" element={<ExpirationsPage />} />
         </Routes>
       </div>
+      <Toaster />
     </ThemeProvider>
   );
 }
