@@ -7,7 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { nameProducts, type Product } from "./product-data";
+import { expirationColumns } from "./expiration-data";
+import type { Product } from "@/components/products/table/product-data";
 import { IconButton } from "@/components/icon-button";
 import {
   ChevronLeft,
@@ -20,22 +21,21 @@ import {
 } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
-import { CreateProduct } from "../create-product";
-import { ProductDetail } from "../product-detail";
+import { ProductDetail } from "@/components/products/product-detail";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-interface ProductsTableProps {
+interface ExpirationTableProps {
   products: Product[];
-  onAddProduct: (product: Product) => void;
-  onEditProduct: (product: Product) => void; // Callback para editar produto
-  onDeleteProduct: (productId: string) => void; // Callback para excluir produto
+  onEditProduct: (product: Product) => void;
+  onDeleteProduct: (productId: string) => void;
 }
 
-export function ProductsTable({
+export function ExpirationTable({
   products,
-  onAddProduct,
   onEditProduct,
   onDeleteProduct,
-}: ProductsTableProps) {
+}: ExpirationTableProps) {
   const [page, setPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [search, setSearch] = useState("");
@@ -77,14 +77,13 @@ export function ProductsTable({
     setPage(totalPages);
   }
 
-  // onClick do input, vai pegar o valor digitado e armazenas no state search
+  // onClick do input, vai pegar o valor digitado e armazenar no state search
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.target.value;
     setSearch(query);
   }
 
-  // Verificar se algo foi digitado no input, se sim ele filtra a tabela por
-  // nome, deixa tudo em lower case e compara. Se não, ele mostra todos.
+  // Filtra a tabela por nome
   const filteredProducts =
     search !== ""
       ? sortedProducts.filter((product) =>
@@ -92,13 +91,11 @@ export function ProductsTable({
         )
       : sortedProducts;
 
-  // Math.max, garante que não fique com 0 paginas, terá sempre 1.
-  // Math.ceil, divide o total de produtos por 5, para deixar apenas 5 produtos por pagina
-  // e não deixa a pagina quebra, se eu tenho 12 produtos, serão 3 paginas
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / 6));
 
   return (
     <>
+      {/* Apenas o input de busca, sem botao de criar produto */}
       <div className="flex flex-row items-center justify-between">
         <BaseInput
           className="w-80"
@@ -108,22 +105,18 @@ export function ProductsTable({
         >
           <SearchIcon />
         </BaseInput>
-        <CreateProduct onAddProduct={onAddProduct} />
       </div>
       <div className="rounded-md border">
         <Table>
-          {/* Nome das colunas */}
+          {/* Colunas da tabela de validades */}
           <TableHeader>
             <TableRow>
-              {nameProducts.map((col) => (
+              {expirationColumns.map((col) => (
                 <TableHead
                   key={col.label}
                   className=" text-center"
                   style={{ width: col.width }}
                 >
-                  {/* Se col.label for igual a "Nome do produto
-                irá retornar o botão de ordernar ao lado dele, e
-                se caso não for, ira retorna apenas o nome da coluna, normalmente" */}
                   {col.label === "Nome do produto" ? (
                     <div className="flex items-center justify-center gap-2">
                       <button
@@ -146,7 +139,7 @@ export function ProductsTable({
             </TableRow>
           </TableHeader>
 
-          {/* Linha das colunas */}
+          {/* Linhas da tabela */}
           {filteredProducts.length > 0 ? (
             <TableBody>
               {filteredProducts
@@ -164,38 +157,31 @@ export function ProductsTable({
                     <TableCell>{product.codBar}</TableCell>
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.brand}</TableCell>
-                    <TableCell>{product.ncm}</TableCell>
                     <TableCell>
-                      {product.costValue?.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
+                      {product.dateExp
+                        ? format(new Date(product.dateExp), "dd/MM/yyyy", {
+                            locale: ptBR,
+                          })
+                        : "-"}
                     </TableCell>
-                    {/* <TableCell>
-                  {product.dateExp
-                    ? format(new Date(product.dateExp), "dd/MM/yyyy", {
-                        locale: ptBR,
-                      })
-                    : "-"}
-                </TableCell> */}
-                    {/* <TableCell>{product.productQuant}</TableCell> */}
+                    <TableCell>{product.productQuant}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           ) : (
             <TableBody>
               <TableRow>
-                <TableCell colSpan={8} className="text-center">
+                <TableCell colSpan={5} className="text-center">
                   <p>Você não possui nenhum produto registrado</p>
                 </TableCell>
               </TableRow>
             </TableBody>
           )}
 
-          {/* Rodapé da tabela */}
+          {/* Rodape da tabela */}
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={8} className="p-2">
+              <TableCell colSpan={5} className="p-2">
                 <TableCell className="flex justify-center items-center p-0">
                   <div className="flex items-center gap-2">
                     <IconButton onClick={goToFirstPage} disabled={page === 1}>

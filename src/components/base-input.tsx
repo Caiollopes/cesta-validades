@@ -7,21 +7,25 @@ import { cn } from "@/lib/utils";
 import type { ComponentProps } from "react";
 
 interface BaseInputProps extends ComponentProps<"input"> {
-  placeholder?: string;
   children?: React.ReactNode;
-  className?: string;
 }
 
 export function BaseInput({
-  placeholder,
   children,
   className,
-  ...props
+  disabled,
+  ...inputProps
 }: BaseInputProps) {
   return (
     <>
-      <InputGroup {...props} className={cn("", className)}>
-        <InputGroupInput placeholder={placeholder} />
+      <InputGroup
+        data-disabled={disabled}
+        className={cn(
+          "data-[disabled=true]:pointer-events-none data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
+          className,
+        )}
+      >
+        <InputGroupInput disabled={disabled} {...inputProps} />
         <InputGroupAddon>{children}</InputGroupAddon>
       </InputGroup>
     </>

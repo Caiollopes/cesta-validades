@@ -15,9 +15,14 @@ import { ChevronDownIcon } from "lucide-react";
 interface DateCalendarProps {
   onDateChange?: (date: Date | undefined) => void;
   value?: Date;
+  disabled?: boolean;
 }
 
-export function DateCalendar({ onDateChange, value }: DateCalendarProps) {
+export function DateCalendar({
+  onDateChange,
+  value,
+  disabled,
+}: DateCalendarProps) {
   const [date, setDate] = React.useState<Date | undefined>(value);
 
   const handleSelectDate = (selectedDate: Date | undefined) => {
@@ -33,6 +38,7 @@ export function DateCalendar({ onDateChange, value }: DateCalendarProps) {
         <Button
           variant="outline"
           data-empty={!date}
+          disabled={disabled}
           className="w-53 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
         >
           {date ? (
