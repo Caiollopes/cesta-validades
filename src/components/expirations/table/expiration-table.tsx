@@ -22,18 +22,23 @@ import {
 import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
 import { ProductDetail } from "@/components/products/product-detail";
+import { ExpirationColorConfig } from "./expiration-color-config";
 import { differenceInCalendarDays, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-function getExpirationRowClass(dateExp?: number): string {
+function getExpirationRowClass(
+  dateExp: number | undefined,
+  redDays: number,
+  yellowDays: number,
+): string {
   if (!dateExp) return "";
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const exp = new Date(dateExp);
   exp.setHours(0, 0, 0, 0);
   const diffDays = differenceInCalendarDays(exp, today);
-  if (diffDays <= 10) return "bg-red-100 dark:bg-red-900/30";
-  if (diffDays <= 20) return "bg-yellow-100 dark:bg-yellow-900/30";
+  if (diffDays <= redDays) return "bg-red-100 dark:bg-red-900/30";
+  if (diffDays <= yellowDays) return "bg-yellow-100 dark:bg-yellow-900/30";
   return "bg-blue-100 dark:bg-blue-900/30";
 }
 
@@ -50,25 +55,39 @@ export function ExpirationTable({
 }: ExpirationTableProps) {
   const [page, setPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<"name" | "date">("name");
   const [search, setSearch] = useState("");
   // Controle do dialog de detalhes do produto
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  // Thresholds de cor
+  const [redDays, setRedDays] = useState(10);
+  const [yellowDays, setYellowDays] = useState(20);
 
-  // Ordena os produtos por nome
+  // Ordena os produtos por nome ou data
   const sortedProducts = [...products].sort((a, b) => {
+    if (sortBy === "date") {
+      const dateA = a.dateExp ?? 0;
+      const dateB = b.dateExp ?? 0;
+      return dateSortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    }
     const nameA = a.name.toLowerCase();
     const nameB = b.name.toLowerCase();
-
-    if (sortOrder === "asc") {
-      return nameA.localeCompare(nameB);
-    } else {
-      return nameB.localeCompare(nameA);
-    }
+    return sortOrder === "asc"
+      ? nameA.localeCompare(nameB)
+      : nameB.localeCompare(nameA);
   });
 
   function handleSortToggle() {
+    setSortBy("name");
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setPage(1);
+  }
+
+  function handleDateSortToggle() {
+    setSortBy("date");
+    setDateSortOrder(dateSortOrder === "asc" ? "desc" : "asc");
     setPage(1);
   }
 
@@ -117,6 +136,14 @@ export function ExpirationTable({
         >
           <SearchIcon />
         </BaseInput>
+        <ExpirationColorConfig
+          redDays={redDays}
+          yellowDays={yellowDays}
+          onSave={(r, y) => {
+            setRedDays(r);
+            setYellowDays(y);
+          }}
+        />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -136,11 +163,27 @@ export function ExpirationTable({
                         className="cursor-pointer hover:opacity-70 flex items-center justify-center gap-1"
                       >
                         {col.label}
-                        {sortOrder === "asc" ? (
-                          <ArrowUp size={16} />
-                        ) : (
-                          <ArrowDown size={16} />
-                        )}
+                        {sortBy === "name" &&
+                          (sortOrder === "asc" ? (
+                            <ArrowUp size={16} />
+                          ) : (
+                            <ArrowDown size={16} />
+                          ))}
+                      </button>
+                    </div>
+                  ) : col.label === "Data de validade" ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={handleDateSortToggle}
+                        className="cursor-pointer hover:opacity-70 flex items-center justify-center gap-1"
+                      >
+                        {col.label}
+                        {sortBy === "date" &&
+                          (dateSortOrder === "asc" ? (
+                            <ArrowUp size={16} />
+                          ) : (
+                            <ArrowDown size={16} />
+                          ))}
                       </button>
                     </div>
                   ) : (
@@ -159,7 +202,7 @@ export function ExpirationTable({
                 .map((product) => (
                   <TableRow
                     key={product.id}
-                    className={`text-center cursor-pointer hover:bg-muted ${getExpirationRowClass(product.dateExp)}`}
+                    className={`text-center cursor-pointer hover:bg-muted ${getExpirationRowClass(product.dateExp, redDays, yellowDays)}`}
                     // Ao clicar na linha, abre o dialog de detalhes
                     onClick={() => {
                       setSelectedProduct(product);

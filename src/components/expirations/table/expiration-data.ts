@@ -1,4 +1,4 @@
-import type { ColumnConfig } from "../products/table/product-data";
+import type { ColumnConfig } from "@/components/products/table/product-data";
 
 // Colunas da tabela de validades
 export const expirationColumns: ColumnConfig[] = [
