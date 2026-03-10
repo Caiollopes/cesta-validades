@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Computer, Leaf, Moon, ShoppingBasket, Sun } from "lucide-react";
+import { Computer, Moon, ShoppingBasket, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "./theme-provider";
 

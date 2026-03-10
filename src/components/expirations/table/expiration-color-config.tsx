@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Palette, Settings2 } from "lucide-react";
+import { Palette } from "lucide-react";
 import {
   Dialog,
   DialogContent,

@@ -5,11 +5,8 @@ import {
   PackagePlus,
   CalendarClock,
   ShieldCheck,
-  Bell,
-  BarChart3,
   Leaf,
   Star,
-  Zap,
   Clock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
