@@ -22,8 +22,20 @@ import {
 import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
 import { ProductDetail } from "@/components/products/product-detail";
-import { format } from "date-fns";
+import { differenceInCalendarDays, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+function getExpirationRowClass(dateExp?: number): string {
+  if (!dateExp) return "";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const exp = new Date(dateExp);
+  exp.setHours(0, 0, 0, 0);
+  const diffDays = differenceInCalendarDays(exp, today);
+  if (diffDays <= 10) return "bg-red-100 dark:bg-red-900/30";
+  if (diffDays <= 20) return "bg-yellow-100 dark:bg-yellow-900/30";
+  return "bg-blue-100 dark:bg-blue-900/30";
+}
 
 interface ExpirationTableProps {
   products: Product[];
@@ -147,7 +159,7 @@ export function ExpirationTable({
                 .map((product) => (
                   <TableRow
                     key={product.id}
-                    className="text-center cursor-pointer hover:bg-muted"
+                    className={`text-center cursor-pointer hover:bg-muted ${getExpirationRowClass(product.dateExp)}`}
                     // Ao clicar na linha, abre o dialog de detalhes
                     onClick={() => {
                       setSelectedProduct(product);
@@ -164,6 +176,20 @@ export function ExpirationTable({
                           })
                         : "-"}
                     </TableCell>
+                    <TableCell>
+                      {product.dateExp
+                        ? (() => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const exp = new Date(product.dateExp);
+                            exp.setHours(0, 0, 0, 0);
+                            const diff = differenceInCalendarDays(exp, today);
+                            if (diff < 0) return "Vencido";
+                            if (diff === 0) return "Vence hoje";
+                            return `${diff} dia${diff !== 1 ? "s" : ""}`;
+                          })()
+                        : "-"}
+                    </TableCell>
                     <TableCell>{product.productQuant}</TableCell>
                   </TableRow>
                 ))}
@@ -171,7 +197,7 @@ export function ExpirationTable({
           ) : (
             <TableBody>
               <TableRow>
-                <TableCell colSpan={5} className="text-center">
+                <TableCell colSpan={6} className="text-center">
                   <p>Você não possui nenhum produto registrado</p>
                 </TableCell>
               </TableRow>
@@ -181,7 +207,7 @@ export function ExpirationTable({
           {/* Rodape da tabela */}
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={5} className="p-2">
+              <TableCell colSpan={6} className="p-2">
                 <TableCell className="flex justify-center items-center p-0">
                   <div className="flex items-center gap-2">
                     <IconButton onClick={goToFirstPage} disabled={page === 1}>
