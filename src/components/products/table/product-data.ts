@@ -1,3 +1,8 @@
+export interface ExpirationEntry {
+  dateExp: number;
+  productQuant: number;
+}
+
 export interface Product {
   id?: string;
   name: string;
@@ -7,6 +12,7 @@ export interface Product {
   costValue?: number;
   dateExp?: number;
   productQuant?: number;
+  expirations?: ExpirationEntry[];
 }
 
 export interface ColumnConfig {

@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
-import { ProductDetail } from "@/components/products/product-detail";
+import { ExpirationDetail } from "@/components/expirations/expiration-detail";
 import { ExpirationColorConfig } from "./expiration-color-config";
 import { differenceInCalendarDays, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -51,7 +51,6 @@ interface ExpirationTableProps {
 export function ExpirationTable({
   products,
   onEditProduct,
-  onDeleteProduct,
 }: ExpirationTableProps) {
   const [page, setPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -122,7 +121,32 @@ export function ExpirationTable({
         )
       : sortedProducts;
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / 6));
+  // Para cada produto, pega a entrada com a data mais próxima
+  type FlatRow = {
+    product: Product;
+    dateExp: number | undefined;
+    productQuant: number | undefined;
+  };
+
+  const flatRows: FlatRow[] = filteredProducts.map((product) => {
+    if (product.expirations && product.expirations.length > 0) {
+      const nearest = product.expirations
+        .filter((e) => e.dateExp > 0)
+        .sort((a, b) => a.dateExp - b.dateExp)[0];
+      return {
+        product,
+        dateExp: nearest?.dateExp,
+        productQuant: nearest?.productQuant,
+      };
+    }
+    return {
+      product,
+      dateExp: product.dateExp,
+      productQuant: product.productQuant,
+    };
+  });
+
+  const totalPages = Math.max(1, Math.ceil(flatRows.length / 6));
 
   return (
     <>
@@ -195,14 +219,14 @@ export function ExpirationTable({
           </TableHeader>
 
           {/* Linhas da tabela */}
-          {filteredProducts.length > 0 ? (
+          {flatRows.length > 0 ? (
             <TableBody>
-              {filteredProducts
+              {flatRows
                 .slice((page - 1) * 6, page * 6)
-                .map((product) => (
+                .map(({ product, dateExp, productQuant }) => (
                   <TableRow
-                    key={product.id}
-                    className={`text-center cursor-pointer hover:bg-muted ${getExpirationRowClass(product.dateExp, redDays, yellowDays)}`}
+                    key={product.id ?? product.name}
+                    className={`text-center cursor-pointer hover:bg-muted ${getExpirationRowClass(dateExp, redDays, yellowDays)}`}
                     // Ao clicar na linha, abre o dialog de detalhes
                     onClick={() => {
                       setSelectedProduct(product);
@@ -213,18 +237,18 @@ export function ExpirationTable({
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.brand}</TableCell>
                     <TableCell>
-                      {product.dateExp
-                        ? format(new Date(product.dateExp), "dd/MM/yyyy", {
+                      {dateExp
+                        ? format(new Date(dateExp), "dd/MM/yyyy", {
                             locale: ptBR,
                           })
                         : "-"}
                     </TableCell>
                     <TableCell>
-                      {product.dateExp
+                      {dateExp
                         ? (() => {
                             const today = new Date();
                             today.setHours(0, 0, 0, 0);
-                            const exp = new Date(product.dateExp);
+                            const exp = new Date(dateExp);
                             exp.setHours(0, 0, 0, 0);
                             const diff = differenceInCalendarDays(exp, today);
                             if (diff < 0) return "Vencido";
@@ -233,7 +257,7 @@ export function ExpirationTable({
                           })()
                         : "-"}
                     </TableCell>
-                    <TableCell>{product.productQuant}</TableCell>
+                    <TableCell>{productQuant}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -241,7 +265,7 @@ export function ExpirationTable({
             <TableBody>
               <TableRow>
                 <TableCell colSpan={6} className="text-center">
-                  <p>Você não possui nenhum produto registrado</p>
+                  <p>Você não possui nenhuma validade registrada</p>
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -287,13 +311,12 @@ export function ExpirationTable({
         </Table>
       </div>
 
-      {/* Dialog de visualizacao, edicao e exclusao do produto */}
-      <ProductDetail
+      {/* Dialog de visualizacao e edicao de validade e quantidade */}
+      <ExpirationDetail
         product={selectedProduct}
         isOpen={isDetailOpen}
         onOpenChange={setIsDetailOpen}
         onEditProduct={onEditProduct}
-        onDeleteProduct={onDeleteProduct}
       />
     </>
   );

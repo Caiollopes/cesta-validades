@@ -18,10 +18,10 @@ export function HomeNavbar() {
     <nav className="sticky top-5 z-50 flex items-center justify-between rounded-2xl border border-border/50 bg-background/80 px-5 py-3 shadow-sm backdrop-blur-md">
       {/* Logo */}
       <button
-        className="flex flex-row items-center gap-2 p-1 transition-colors hover:text-green-600 dark:hover:text-green-400 cursor-pointer"
+        className="flex flex-row items-center gap-2 p-1 transition-colors hover:text-primary cursor-pointer"
         onClick={() => navigate("/")}
       >
-        <ShoppingBasket className="size-7 text-green-600 dark:text-green-400" />
+        <ShoppingBasket className="size-7 text-primary" />
         <span className="font-semibold text-base tracking-tight hidden sm:inline">
           Cesta Validades
         </span>
@@ -42,7 +42,7 @@ export function HomeNavbar() {
               <span className="sr-only">Toggle theme</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[130px]">
+          <DropdownMenuContent align="end" className="min-w-32.5">
             <DropdownMenuItem
               onClick={() => setTheme("light")}
               className="flex items-center gap-2"
@@ -70,7 +70,7 @@ export function HomeNavbar() {
 
         <Button
           size="sm"
-          className="rounded-full bg-green-600 hover:bg-green-700 text-white dark:bg-green-500 dark:hover:bg-green-600"
+          className=" bg-primary text-background "
           onClick={() => navigate("/app/produtos")}
         >
           Teste agora

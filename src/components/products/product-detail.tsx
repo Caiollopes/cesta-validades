@@ -194,7 +194,7 @@ export function ProductDetail({
                     <Input
                       id="detail-brand"
                       autoComplete="off"
-                      placeholder="Digite a marca do produto..."
+                      placeholder="Marca do produto..."
                       value={brand}
                       onChange={(e) => setBrand(e.target.value)}
                       disabled={!isEditing}

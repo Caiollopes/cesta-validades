@@ -26,8 +26,8 @@ import { ProductDetail } from "../product-detail";
 interface ProductsTableProps {
   products: Product[];
   onAddProduct: (product: Product) => void;
-  onEditProduct: (product: Product) => void; // Callback para editar produto
-  onDeleteProduct: (productId: string) => void; // Callback para excluir produto
+  onEditProduct: (product: Product) => void;
+  onDeleteProduct: (productId: string) => void;
 }
 
 export function ProductsTable({
@@ -108,7 +108,9 @@ export function ProductsTable({
         >
           <SearchIcon />
         </BaseInput>
-        <CreateProduct onAddProduct={onAddProduct} />
+        <div className="flex gap-2">
+          <CreateProduct onAddProduct={onAddProduct} />
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -171,14 +173,6 @@ export function ProductsTable({
                         currency: "BRL",
                       })}
                     </TableCell>
-                    {/* <TableCell>
-                  {product.dateExp
-                    ? format(new Date(product.dateExp), "dd/MM/yyyy", {
-                        locale: ptBR,
-                      })
-                    : "-"}
-                </TableCell> */}
-                    {/* <TableCell>{product.productQuant}</TableCell> */}
                   </TableRow>
                 ))}
             </TableBody>

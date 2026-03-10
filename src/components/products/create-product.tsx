@@ -130,7 +130,7 @@ export function CreateProduct({ onAddProduct }: CreateProductProps) {
                       <Input
                         id="brand"
                         autoComplete="off"
-                        placeholder="Digite a marca do produto..."
+                        placeholder="Marca do produto..."
                         value={brand}
                         onChange={(e) => setBrand(e.target.value)}
                       />

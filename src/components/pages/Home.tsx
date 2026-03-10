@@ -57,14 +57,14 @@ export function HomePage() {
 
       {/* Inicio */}
       <section className="relative flex flex-col items-center text-center gap-6 py-24 overflow-hidden">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-green-300 bg-green-50 dark:bg-green-950/50 dark:border-green-800 px-3 py-1 text-xs font-medium text-green-700 dark:text-green-400">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-3 py-1 text-xs font-medium text-primary dark:text-primary">
           <Leaf className="h-3 w-3" />
           Controle inteligente de validades
         </span>
 
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl max-w-3xl">
           Controle as validades da sua cesta de forma{" "}
-          <span className="text-green-600 dark:text-green-400">simples</span>
+          <span className="text-primary dark:text-primary">simples</span>
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground">
           O <strong>Cesta Validades</strong> ajuda você a cadastrar produtos,
@@ -90,7 +90,7 @@ export function HomePage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full text-center">
           {stats.map((stat) => (
             <div key={stat.label} className="flex flex-col items-center gap-1">
-              <stat.icon className="size-5 text-green-500 mb-1" />
+              <stat.icon className="size-5 text-primary mb-1" />
               <span className="text-3xl font-bold">{stat.value}</span>
               <span className="text-sm text-muted-foreground">
                 {stat.label}

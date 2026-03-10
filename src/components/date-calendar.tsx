@@ -25,6 +25,10 @@ export function DateCalendar({
 }: DateCalendarProps) {
   const [date, setDate] = React.useState<Date | undefined>(value);
 
+  React.useEffect(() => {
+    setDate(value);
+  }, [value]);
+
   const handleSelectDate = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     if (onDateChange) {
