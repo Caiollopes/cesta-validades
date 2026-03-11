@@ -3,19 +3,15 @@ import {
   TableBody,
   TableCell,
   TableFooter,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { nameProducts, type Product } from "./product-data";
+import type { Product } from "./product-data";
 import { IconButton } from "@/components/icon-button";
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  ArrowUp,
-  ArrowDown,
   SearchIcon,
   Package,
   ScanBarcode,
@@ -40,28 +36,10 @@ export function ProductsTable({
   onDeleteProduct,
 }: ProductsTableProps) {
   const [page, setPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [search, setSearch] = useState("");
   // Controle do dialog de detalhes do produto
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-
-  // Ordena os produtos por nome
-  const sortedProducts = [...products].sort((a, b) => {
-    const nameA = a.name.toLowerCase();
-    const nameB = b.name.toLowerCase();
-
-    if (sortOrder === "asc") {
-      return nameA.localeCompare(nameB);
-    } else {
-      return nameB.localeCompare(nameA);
-    }
-  });
-
-  function handleSortToggle() {
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    setPage(1);
-  }
 
   function goToFirstPage() {
     setPage(1);
@@ -90,10 +68,10 @@ export function ProductsTable({
   // nome, deixa tudo em lower case e compara. Se não, ele mostra todos.
   const filteredProducts =
     search !== ""
-      ? sortedProducts.filter((product) =>
+      ? products.filter((product) =>
           product.name.toLowerCase().includes(search.toLowerCase()),
         )
-      : sortedProducts;
+      : products;
 
   // Math.max, garante que não fique com 0 paginas, terá sempre 1.
   // Math.ceil, divide o total de produtos por 5, para deixar apenas 5 produtos por pagina

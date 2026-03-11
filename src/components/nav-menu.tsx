@@ -17,7 +17,7 @@ export function FuncMenu() {
             onClick={() => navigate("/app/produtos")}
             className={
               isActive("/app/produtos")
-                ? "bg-primary text-background"
+                ? "bg-primary text-background font-semibold"
                 : "hover:bg-muted/30"
             }
           >
@@ -29,7 +29,7 @@ export function FuncMenu() {
             onClick={() => navigate("/app/validades")}
             className={
               isActive("/app/validades")
-                ? "bg-primary text-background"
+                ? "bg-primary text-background font-semibold"
                 : "hover:bg-muted/30"
             }
           >

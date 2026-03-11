@@ -6,7 +6,7 @@ import { ExpirationsPage } from "./Expirations";
 
 export function DashboardPage() {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-5">
       <HomeNavbar />
       <FuncMenu />
       <Routes>

@@ -3,11 +3,8 @@ import {
   TableBody,
   TableCell,
   TableFooter,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { expirationColumns } from "./expiration-data";
 import type { Product } from "@/components/products/table/product-data";
 import { IconButton } from "@/components/icon-button";
 import {
@@ -15,8 +12,6 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  ArrowUp,
-  ArrowDown,
   SearchIcon,
   Blend,
   Package,
@@ -27,8 +22,7 @@ import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
 import { ExpirationDetail } from "@/components/expirations/expiration-detail";
 import { ExpirationColorConfig } from "./expiration-color-config";
-import { differenceInCalendarDays, format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { differenceInCalendarDays } from "date-fns";
 
 function getExpirationRowClass(
   dateExp: number | undefined,
@@ -69,9 +63,6 @@ export function ExpirationTable({
   onEditProduct,
 }: ExpirationTableProps) {
   const [page, setPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [dateSortOrder, setDateSortOrder] = useState<"asc" | "desc">("asc");
-  const [sortBy, setSortBy] = useState<"name" | "date">("name");
   const [search, setSearch] = useState("");
   // Controle do dialog de detalhes do produto
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -80,31 +71,12 @@ export function ExpirationTable({
   const [redDays, setRedDays] = useState(10);
   const [yellowDays, setYellowDays] = useState(20);
 
-  // Ordena os produtos por nome ou data
+  // Ordena os produtos pela data de validade mais próxima
   const sortedProducts = [...products].sort((a, b) => {
-    if (sortBy === "date") {
-      const dateA = a.dateExp ?? 0;
-      const dateB = b.dateExp ?? 0;
-      return dateSortOrder === "asc" ? dateA - dateB : dateB - dateA;
-    }
-    const nameA = a.name.toLowerCase();
-    const nameB = b.name.toLowerCase();
-    return sortOrder === "asc"
-      ? nameA.localeCompare(nameB)
-      : nameB.localeCompare(nameA);
+    const dateA = a.dateExp ?? 0;
+    const dateB = b.dateExp ?? 0;
+    return dateA - dateB;
   });
-
-  function handleSortToggle() {
-    setSortBy("name");
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    setPage(1);
-  }
-
-  function handleDateSortToggle() {
-    setSortBy("date");
-    setDateSortOrder(dateSortOrder === "asc" ? "desc" : "asc");
-    setPage(1);
-  }
 
   function goToFirstPage() {
     setPage(1);
@@ -162,7 +134,7 @@ export function ExpirationTable({
     };
   });
 
-  const totalPages = Math.max(1, Math.ceil(flatRows.length / 6));
+  const totalPages = Math.max(1, Math.ceil(flatRows.length / 4));
 
   return (
     <>
@@ -191,7 +163,7 @@ export function ExpirationTable({
           {flatRows.length > 0 ? (
             <TableBody className="flex flex-col gap-2">
               {flatRows
-                .slice((page - 1) * 6, page * 6)
+                .slice((page - 1) * 4, page * 4)
                 .map(({ product, dateExp, productQuant }) => (
                   <div className="rounded-md border">
                     <TableRow
