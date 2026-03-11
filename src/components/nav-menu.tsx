@@ -16,7 +16,9 @@ export function FuncMenu() {
           <MenubarTrigger
             onClick={() => navigate("/app/produtos")}
             className={
-              isActive("/app/produtos") ? "bg-primary" : "hover:bg-muted/30"
+              isActive("/app/produtos")
+                ? "bg-primary text-background"
+                : "hover:bg-muted/30"
             }
           >
             Produtos
@@ -26,7 +28,9 @@ export function FuncMenu() {
           <MenubarTrigger
             onClick={() => navigate("/app/validades")}
             className={
-              isActive("/app/validades") ? "bg-primary" : "hover:bg-muted/30"
+              isActive("/app/validades")
+                ? "bg-primary text-background"
+                : "hover:bg-muted/30"
             }
           >
             Validades

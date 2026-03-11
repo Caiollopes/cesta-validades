@@ -18,6 +18,10 @@ import {
   ArrowUp,
   ArrowDown,
   SearchIcon,
+  Blend,
+  Package,
+  ScanBarcode,
+  Calendar,
 } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 import { BaseInput } from "@/components/base-input";
@@ -37,9 +41,21 @@ function getExpirationRowClass(
   const exp = new Date(dateExp);
   exp.setHours(0, 0, 0, 0);
   const diffDays = differenceInCalendarDays(exp, today);
-  if (diffDays <= redDays) return "bg-red-100 dark:bg-red-900/30";
-  if (diffDays <= yellowDays) return "bg-yellow-100 dark:bg-yellow-900/30";
-  return "bg-blue-100 dark:bg-blue-900/30";
+  if (diffDays <= redDays) return "bg-red-700/10 border-red-700 text-red-700";
+  if (diffDays <= yellowDays)
+    return "bg-yellow-700/10 border-yellow-700 text-yellow-700";
+  return "bg-blue-700/10 border-blue-700 text-blue-700";
+}
+
+function getExpirationTextClass(
+  dateExp: number | undefined,
+  redDays: number,
+  yellowDays: number,
+): string {
+  return getExpirationRowClass(dateExp, redDays, yellowDays)
+    .split(" ")
+    .filter((cls) => !cls.startsWith("bg-") && !cls.startsWith("dark:bg-"))
+    .join(" ");
 }
 
 interface ExpirationTableProps {
@@ -151,7 +167,7 @@ export function ExpirationTable({
   return (
     <>
       {/* Apenas o input de busca, sem botao de criar produto */}
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-0">
         <BaseInput
           className="w-80"
           placeholder="Buscar produto"
@@ -169,96 +185,83 @@ export function ExpirationTable({
           }}
         />
       </div>
-      <div className="rounded-md border">
+      <div>
         <Table>
-          {/* Colunas da tabela de validades */}
-          <TableHeader>
-            <TableRow>
-              {expirationColumns.map((col) => (
-                <TableHead
-                  key={col.label}
-                  className=" text-center"
-                  style={{ width: col.width }}
-                >
-                  {col.label === "Nome do produto" ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        onClick={handleSortToggle}
-                        className="cursor-pointer hover:opacity-70 flex items-center justify-center gap-1"
-                      >
-                        {col.label}
-                        {sortBy === "name" &&
-                          (sortOrder === "asc" ? (
-                            <ArrowUp size={16} />
-                          ) : (
-                            <ArrowDown size={16} />
-                          ))}
-                      </button>
-                    </div>
-                  ) : col.label === "Data de validade" ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        onClick={handleDateSortToggle}
-                        className="cursor-pointer hover:opacity-70 flex items-center justify-center gap-1"
-                      >
-                        {col.label}
-                        {sortBy === "date" &&
-                          (dateSortOrder === "asc" ? (
-                            <ArrowUp size={16} />
-                          ) : (
-                            <ArrowDown size={16} />
-                          ))}
-                      </button>
-                    </div>
-                  ) : (
-                    col.label
-                  )}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-
           {/* Linhas da tabela */}
           {flatRows.length > 0 ? (
-            <TableBody>
+            <TableBody className="flex flex-col gap-2">
               {flatRows
                 .slice((page - 1) * 6, page * 6)
                 .map(({ product, dateExp, productQuant }) => (
-                  <TableRow
-                    key={product.id ?? product.name}
-                    className={`text-center cursor-pointer hover:bg-muted ${getExpirationRowClass(dateExp, redDays, yellowDays)}`}
-                    // Ao clicar na linha, abre o dialog de detalhes
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      setIsDetailOpen(true);
-                    }}
-                  >
-                    <TableCell>{product.codBar}</TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.brand}</TableCell>
-                    <TableCell>
-                      {dateExp
-                        ? format(new Date(dateExp), "dd/MM/yyyy", {
-                            locale: ptBR,
-                          })
-                        : "-"}
-                    </TableCell>
-                    <TableCell>
-                      {dateExp
-                        ? (() => {
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            const exp = new Date(dateExp);
-                            exp.setHours(0, 0, 0, 0);
-                            const diff = differenceInCalendarDays(exp, today);
-                            if (diff < 0) return "Vencido";
-                            if (diff === 0) return "Vence hoje";
-                            return `${diff} dia${diff !== 1 ? "s" : ""}`;
-                          })()
-                        : "-"}
-                    </TableCell>
-                    <TableCell>{productQuant}</TableCell>
-                  </TableRow>
+                  <div className="rounded-md border">
+                    <TableRow
+                      key={product.id ?? product.name}
+                      className={`flex flex-row cursor-pointer hover:bg-muted/10 hover:rounded-md rounded-md p-2 gap-3 `}
+                      // Ao clicar na linha, abre o dialog de detalhes
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setIsDetailOpen(true);
+                      }}
+                    >
+                      <div className="flex justify-between  sm:items-center items-start w-full flex-col sm:flex-row gap-2 sm:gap-0">
+                        <div className="flex flex-row gap-2">
+                          <div
+                            className={`flex rounded-md  items-center justify-center p-4 border ${getExpirationRowClass(dateExp, redDays, yellowDays)}`}
+                          >
+                            <Package
+                              className={`size-8 ${getExpirationTextClass(dateExp, redDays, yellowDays)}`}
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <TableCell className="flex items-center gap-1 text-lg font-semibold">
+                              {product.name}
+                            </TableCell>
+                            <TableCell className="flex items-center gap-1">
+                              <ScanBarcode className="size-4 text-muted" />
+                              {product.codBar}
+                            </TableCell>
+                            <TableCell className="flex items-center gap-1">
+                              <Blend className="size-4 text-muted" />
+                              {product.brand}
+                            </TableCell>
+                          </div>
+                        </div>
+                        <div
+                          className={`flex flex-row items-center p-3 border rounded-md text-center gap-3 ${getExpirationTextClass(dateExp, redDays, yellowDays)}`}
+                        >
+                          {/* <TableCell className="flex flex-row items-center gap-1">
+                              {dateExp
+                                ? format(new Date(dateExp), "dd/MM/yyyy", {
+                                    locale: ptBR,
+                                  })
+                                : "-"}
+                            </TableCell> */}
+                          <TableCell className="flex flex-row items-center gap-1">
+                            <Package className="size-4" />
+                            {productQuant}
+                          </TableCell>
+                          <TableCell className="flex flex-row items-center gap-1">
+                            <Calendar className="size-4" />
+                            {dateExp
+                              ? (() => {
+                                  const today = new Date();
+                                  today.setHours(0, 0, 0, 0);
+                                  const exp = new Date(dateExp);
+                                  exp.setHours(0, 0, 0, 0);
+                                  const diff = differenceInCalendarDays(
+                                    exp,
+                                    today,
+                                  );
+                                  if (diff < 0) return "Vencido";
+                                  if (diff === 0) return "Vence hoje";
+                                  return `${diff} dia${diff !== 1 ? "s" : ""}`;
+                                })()
+                              : "-"}
+                          </TableCell>
+                        </div>
+                      </div>
+                    </TableRow>
+                  </div>
                 ))}
             </TableBody>
           ) : (
@@ -272,7 +275,7 @@ export function ExpirationTable({
           )}
 
           {/* Rodape da tabela */}
-          <TableFooter>
+          <TableFooter className="bg-background border-none">
             <TableRow>
               <TableCell colSpan={6} className="p-2">
                 <TableCell className="flex justify-center items-center p-0">
