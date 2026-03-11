@@ -7,7 +7,7 @@ import { DashboardPage } from "./components/pages/Dashboard";
 export function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="flex flex-col px-20 py-5 justify-center w-full ">
+      <div className="flex flex-col px-5 sm:px-20 py-5 justify-center w-full ">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/app/*" element={<DashboardPage />} />
